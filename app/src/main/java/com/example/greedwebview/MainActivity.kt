@@ -1,15 +1,15 @@
 package com.example.greedwebview
 
 import android.graphics.Bitmap
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import com.example.greedwebview.greed.OdysManager
+import com.example.greedwebview.utils.ScrollableWebview
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
     private var webview: WebView? = null
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
      * 直接创建webview方式进行
      */
     private fun initNoPre() {
-        initWebview(WebView(baseContext))
+        initWebview(ScrollableWebview(baseContext))
     }
 
     private fun initWebview(webview: WebView) {
@@ -78,8 +78,10 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+        initWebSetting(webview)
         Log.d(TAG, "initWebview webview $webview time  ${System.currentTimeMillis() - startTime}")
-        webview.loadUrl("https://www.baidu.com/")
+        webview.loadUrl("https://www.csdn.net/?orgId=1996123849")
+
     }
 
     override fun onDestroy() {
@@ -91,4 +93,25 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "GreedWebview"
     }
+
+    private fun initWebSetting(webView: WebView) {
+        if (webView.isInEditMode) {
+            return
+        }
+        webView.isFocusable = true
+        webView.isFocusableInTouchMode = true
+        webView.isSaveEnabled = true
+        val webSettings = webView.settings
+        webSettings.allowFileAccess = false
+        webSettings.allowFileAccessFromFileURLs = false
+        webSettings.allowUniversalAccessFromFileURLs = false
+        webSettings.setSupportMultipleWindows(true)
+        webSettings.builtInZoomControls = false
+        webSettings.javaScriptEnabled = true
+        webSettings.domStorageEnabled = true
+        webSettings.databaseEnabled = true
+        webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
+    }
+
 }
