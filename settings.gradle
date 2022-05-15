@@ -1,0 +1,3 @@
+rootProject.name = "GreedWebView"
+include ':app'
+include ':greed'
