@@ -9,6 +9,8 @@ import android.view.animation.Interpolator
 import android.view.animation.TranslateAnimation
 import android.webkit.WebView
 import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sin
 
 /**
  *
@@ -108,15 +110,16 @@ class ScrollableWebview @JvmOverloads constructor(
         animation.duration = 800
         animation.fillAfter = true
         //设置阻尼动画效果
-        animation.interpolator = DampInterpolator()
+        animation.interpolator = SpringInterpolation()
         this.animation = animation
     }
 
-    class DampInterpolator : Interpolator {
+    class SpringInterpolation : Interpolator {
         override fun getInterpolation(input: Float): Float {
-            //没看过源码，猜测是input是时间（0-1）,返回值应该是进度（0-1）
-            //先快后慢，为了更快更慢的效果，多乘了几次，现在这个效果比较满意
-            return 1 - (1 - input) * (1 - input) * (1 - input) * (1 - input) * (1 - input)
+            val minus10 = -10
+            val int4 = 4
+            val factor=4
+            return (2.0.pow((minus10 * input).toDouble()) * sin((input - factor / int4) * (2 * Math.PI) / factor) + 1).toFloat()
         }
     }
 }
